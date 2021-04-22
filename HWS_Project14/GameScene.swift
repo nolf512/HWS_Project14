@@ -42,11 +42,16 @@ class GameScene: SKScene {
         for i in 0..<5 { createSlot(at: CGPoint(x: 100 + (i * 170), y: 230)) }
         for i in 0..<4 { createSlot(at: CGPoint(x: 180 + (i * 170), y: 140)) }
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            [weak self] in
+            self?.createEnemy()
         
-        
+            }
         }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        
         
     }
     
