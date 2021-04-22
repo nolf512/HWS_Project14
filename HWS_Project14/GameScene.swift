@@ -15,6 +15,8 @@ class GameScene: SKScene {
     
     var popupTime = 0.85
     
+    var numRounds = 0
+    
     var score = 0 {
         didSet {
             gameScore.text = "Score: \(score)"
@@ -51,7 +53,38 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        let tappedNodes = nodes(at: location)
         
+        for node in tappedNodes {
+            
+            guard let whackASlot = node.parent?.parent as? WhackSlot else {
+                continue
+            }
+            if !whackASlot.isVisible { continue }
+            if whackASlot.isHit { continue }
+            whackASlot.hit()
+            
+            if node.name == "charFriend" {
+                
+                score -= 5
+                
+                run(SKAction.playSoundFileNamed("whackBad.caf", waitForCompletion: false))
+                
+            } else if node.name == "charEnemy" {
+                if !whackASlot.isVisible { continue }
+                if whackASlot.isHit { continue }
+                
+                whackASlot.charNode.xScale = 0.85
+                whackASlot.charNode.yScale = 0.85
+                
+                score += 1
+                
+                run(SKAction.playSoundFileNamed("whack.caf", waitForCompletion: false))
+
+            }
+        }
         
     }
     
@@ -63,6 +96,9 @@ class GameScene: SKScene {
     }
     
     func createEnemy(){
+         
+        
+        
         popupTime *= 0.991
         
         slots.shuffle()
